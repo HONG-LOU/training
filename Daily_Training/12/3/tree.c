@@ -45,6 +45,57 @@ int insert(Tree *T, int key) {
   }
 }
 
+void delete(Tree *p) {
+  Tree q, s;
+  if (!(*p) -> l && !(*p) -> r) {
+    *p = NULL;
+  }
+  else if (!(*p) -> l) {
+    q = *p;
+    *p = (*p) -> r;
+    free(q);
+  }
+  else if (!(*p) -> r) {
+    q = *p;
+    *p = (*p) -> l;
+    free(q);
+  }
+  else {
+    q = *p;
+    s = (*p) -> l;
+    while (s -> r) {
+      q = s;
+      s = s -> r;
+    }
+    (*p) -> val = s -> val;
+    if (q != *p) {
+      q -> l = s -> l;
+    }
+    else {
+      q -> l = s -> l;
+    }
+    free(s);
+  }
+}
+
+int deleteNode(Tree *T, int key) {
+  if (!(*T)) {
+    return 0;
+  }
+  else {
+    if (key == (*T) -> val) {
+      delete(T);
+      return 1;
+    }
+    else if (key < (*T) -> val) {
+      return deleteNode(&(*T) -> l, key);
+    }
+    else {
+      return deleteNode(&(*T) -> r, key);
+    }
+  }
+}
+
 void printTree(Node* T) {
   if (T) {
     printTree(T -> l);
@@ -85,5 +136,7 @@ int main() {
   deepth(T, 1);
   printTree(T);
   printf("\n");
-  printf("%d", ans);
+  printf("%d\n", ans);
+  deleteNode(&T, 4);
+  printTree(T);
 }
