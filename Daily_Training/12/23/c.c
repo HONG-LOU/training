@@ -8,10 +8,10 @@ int main () {
   
   freopen("in.txt", "r", stdin);
 
-  // char c;
-  // while (scanf("%c", &c) != EOF) {
-  //   printf("%c", c);
-  // }
+  char c;
+  while (scanf("%c", &c) != EOF) {
+    printf("%c", c);
+  }
 
   int a;
   scanf("%d", &a);
