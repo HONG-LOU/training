@@ -1,6 +1,6 @@
 /**
  *    author:  HONG-LOU
- *    created: 2023-01-07 14:46:07
+ *    created: 2023-01-07 18:11:14
 **/
 #include <bits/stdc++.h>
 
@@ -10,20 +10,22 @@ auto main() -> int {
   int tt;
   std::cin >> tt;
   while (tt--) {
-    int n, k;
-    std::cin >> n >> k;
+    int n;
+    std::cin >> n;
     std::vector<int> a(n);
-    std::vector<int> pos(n);
+    int sum = 0;
     for (int i = 0; i < n; i++) {
       std::cin >> a[i];
-      pos[--a[i]] = i;
+      if (a[i] > i + 1) {
+        sum += a[i] - (i + 1);
+      }
     }
-    int cnt = 1;
-    while (cnt < n && pos[cnt] > pos[cnt - 1]) {
-      cnt += 1;
+    if (sum & 1) {
+      std::cout << sum / 2 << "\n";
     }
-    int left = n - cnt;
-    std::cout << (left + k - 1) / k << "\n";
-  }
+    else {
+      std::cout << sum / 2 + 1 << "\n";
+    }
+  }  
   return 0;
 }
