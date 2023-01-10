@@ -8,7 +8,7 @@ int main() {
   // std::cin.tie(nullptr) -> std::ios::sync_with_stdio(false);
 
   freopen("final.txt", "r", stdin);
-  freopen("result.txt", "w", stdout);
+  freopen("C:\\Users\\32644\\Desktop\\各种奇奇怪怪\\class\\result.txt", "w", stdout);
   const int sum = 32;
   double value_sum = 0;
   double ans = 0;
@@ -46,6 +46,5 @@ int main() {
     }
     std::cout << "]\n";
   }
-  std::cout << "\nresult is " << ans;
   return 0;
 }

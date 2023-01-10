@@ -7,7 +7,7 @@
 int main() {
   std::cin.tie(nullptr) -> std::ios::sync_with_stdio(false);
 
-  const int sum = 6;
+  const int sum = 7;
 
   std::vector<std::pair<std::string, double>> x(sum);
 
@@ -28,12 +28,15 @@ int main() {
 
   x[5].first = "李先进";
   x[5].second = 84.5 * 0.8 + 15 * 0.2;
+  
+  x[6].first = "高普伦";
+  x[6].second = 89 * 0.8 + 50 * 0.2;
 
   std::sort(x.begin(), x.end(), [&] (std::pair<std::string, double> a, std::pair<std::string, double> b) {
     return a.second > b.second;
   });
 
-  freopen("class.txt", "w", stdout);
+  freopen("C:\\Users\\32644\\Desktop\\各种奇奇怪怪\\class\\class.txt", "w", stdout);
 
   for (int i = 0; i < sum; i++) {
     std::cout << '[' << x[i].first << " ==> " << x[i].second << ']' << "\n "[i == sum - 1];
