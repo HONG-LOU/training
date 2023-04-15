@@ -1,0 +1,45 @@
+JYX的课设就比较高级了，他做了一款专属于自己的浏览器
+
+这个浏览器有三种操作：打开页面、回退以及前进
+
+-打开页面：在命令行中输入网址，并跳转到这个页面
+-回退：返回到上一次访问的页面
+-前进：返回到上次回退前的页面，上次是打开页面操作则依然在当前页面
+
+JYX在他的浏览器上经过一系列花里胡哨的操作后你都看呆了
+你现在只想知道他每次操作过后的当前页面
+
+输入格式：
+第一行输入一个整数N（1<=N<=1e6），表示JYX的操作次数
+接下来N行，每行先输入一个字符串
+如果是Enter，后面接着输入一个不含空格和换行的网址（长度小于100），代表打开页面操作
+如果是Back，表示JYX做了一次回退操作
+如果是Forward，表示JYX做了一次前进操作
+
+输出格式：
+对于每次操作，如果可以操作成功，输出操作后的网址，否则输出Error
+
+样例：
+输入：
+10
+Enter https://jyx.com/
+Enter https://www.taobao.com/
+Back
+Back
+Forward
+Forward
+Back
+Enter https://hong-lou.github.io/
+Forward
+Back
+输出：
+https://www.jyx.com/
+https://www.taobao.com/
+https://www.jyx.com/
+Error
+https://www.taobao.com/
+Error
+https://www.jyx.com/
+https://hong-lou.github.io/
+Error
+https://www.jyx.com/
