@@ -53,7 +53,6 @@ auto main () -> int {
     int cnt = 1;
     auto check = [&] (std::string a, std::string b) {
       int i = 1, j;
-      for (std::string A = a; !A.empty(); A = )
     };
   }
   return 0;
