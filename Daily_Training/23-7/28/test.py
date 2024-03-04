@@ -2,7 +2,7 @@ import json
 import requests 
 from tabulate import tabulate
 
-nwnu = {'xingliu', 'huanshao2341', 'yumingjs'}
+nwnu = {'xingliu', 'huanshao2341', 'yumingjs', 'Souture', 'Abinnn'}
 
 d = []
 
