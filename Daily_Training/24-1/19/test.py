@@ -50,7 +50,7 @@ for name in nwnu:
 print(tip)
   
 d.sort(key=lambda x: -x[3])
-d[-8][1] = '马瑞'
+# d[-8][1] = '马瑞'
 print(tabulate(d, headers=["Handle", "Name", "Rank", "MaxRating", "Rating"], tablefmt="fancy_grid"))
 
 
