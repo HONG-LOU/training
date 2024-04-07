@@ -1,0 +1,35 @@
+Initial Grammar Set : {
+  Z ==> Be
+  A ==> Ae
+  A ==> e
+  B ==> Ce
+  B ==> Af
+  C ==> Cf
+  D ==> f
+
+  Terminal : e f 
+  Non-Terminal : A B C D Z 
+};
+
+After First Check : {
+  Z ==> Be
+  A ==> Ae
+  A ==> e
+  B ==> Ce
+  B ==> Af
+  C ==> Cf
+
+  Terminal : e f 
+  Non-Terminal : A B C Z 
+};
+
+After Second Check : {
+  A ==> e
+  A ==> Ae
+  B ==> Af
+  Z ==> Be
+
+  Terminal : e f 
+  Non-Terminal : A B Z 
+};
+
