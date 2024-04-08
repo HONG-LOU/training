@@ -1,6 +1,13 @@
-Z::=Be
-A::=Ae
-A::=e
-B::=Ce
-B::=Af
-C::=Cf
+Z::=E+T 
+F::=F FP P 
+G::=G GG F 
+E::=E S+F T 
+P::=G 
+T::=T*i i 
+S::=i 
+
+E::=E S+F T 
+S::=i 
+T::=T*i i 
+Z::=E+T 
+

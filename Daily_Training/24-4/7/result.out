@@ -1,35 +1,57 @@
 Initial Grammar Set : {
-  Z ==> Be
-  A ==> Ae
-  A ==> e
-  B ==> Ce
-  B ==> Af
-  C ==> Cf
-  D ==> f
+  Z ==> E+T
+  F ==> F|FP|P
+  G ==> G|GG|F
+  Q ==> E|E+F|T|S
+  E ==> E|S+F|T
+  P ==> G
+  T ==> T*i|i
+  S ==> i
 
-  Terminal : e f 
-  Non-Terminal : A B C D Z 
+  Terminal : * + i 
+  Non-Terminal : E F G P Q S T Z 
 };
 
 After First Check : {
-  Z ==> Be
-  A ==> Ae
-  A ==> e
-  B ==> Ce
-  B ==> Af
-  C ==> Cf
+  Z ==> E+T
+  F ==> F|FP|P
+  G ==> G|GG|F
+  E ==> E|S+F|T
+  P ==> G
+  T ==> T*i|i
+  S ==> i
 
-  Terminal : e f 
-  Non-Terminal : A B C Z 
+  Terminal : * + i 
+  Non-Terminal : E F G P S T Z 
 };
 
 After Second Check : {
-  A ==> e
-  A ==> Ae
-  B ==> Af
-  Z ==> Be
+  E ==> E|S+F|T
+  S ==> i
+  T ==> T*i|i
+  Z ==> E+T
 
-  Terminal : e f 
-  Non-Terminal : A B Z 
+  Terminal : * + i 
+  Non-Terminal : E S T Z 
+};
+
+After First Check : {
+  E ==> E|S+F|T
+  S ==> i
+  T ==> T*i|i
+  Z ==> E+T
+
+  Terminal : * + i 
+  Non-Terminal : E F S T Z 
+};
+
+After Second Check : {
+  E ==> E|S+F|T
+  S ==> i
+  T ==> T*i|i
+  Z ==> E+T
+
+  Terminal : * + i 
+  Non-Terminal : E S T Z 
 };
 

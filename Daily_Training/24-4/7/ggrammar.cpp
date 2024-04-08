@@ -166,7 +166,6 @@ auto first_check () -> bool {
     }
     first_check_os << "\n";
   }
-  first_check_os << "\n";
   return (int) G.size() == sz;
 };
 
@@ -202,6 +201,13 @@ auto second_check () -> bool {
       }
     }
   }
+
+  auto sq = sderive;
+  while (!sq.empty()) {
+    std::cout << sq.front() << ' ';
+    sq.pop();
+  }
+  std::cout << "\n";
 
   // 符合条件一直推导
   while (!sderive.empty()) {
@@ -251,7 +257,6 @@ auto second_check () -> bool {
 
     nG.push_back(c);
   }
-  second_check_os << "\n";
 
   G = nG;
   return (int) G.size() == sz;
@@ -366,6 +371,21 @@ auto main () -> int {
       print();
     }
   }
+
+  // first_check(); // 判别条件1
+
+  // out << "After First Check :";
+
+  // print();
+
+  // second_check();
+
+  // update_set();
+
+  // out << "After Second Check :";
+
+  // print();
+
 
   in.close();
   out.close();

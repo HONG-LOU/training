@@ -1,4 +1,10 @@
-A::=e
-A::=Ae
-B::=Af
-Z::=Be
+E::=E S+F T 
+S::=i 
+T::=T*i i 
+Z::=E+T 
+
+E::=E S+F T 
+S::=i 
+T::=T*i i 
+Z::=E+T 
+
