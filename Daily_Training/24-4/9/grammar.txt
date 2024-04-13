@@ -1,0 +1,9 @@
+S -> NP VP
+NP -> Det N | ProperNoun
+VP -> V | V NP | V NP PP
+PP -> P NP
+Det -> "a" | "the"
+N -> "man" | "dog" | "cat"
+ProperNoun -> "John" | "Mary"
+V -> "chased" | "saw" | "ate"
+P -> "with" | "in" | "on"
