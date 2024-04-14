@@ -23,6 +23,27 @@ public:
   ~grammar();
 };
 
+class bck
+{
+private:
+  std::deque<std::string> f;
+  std::deque<std::pair<std::string, std::string>> s;
+public:
+  bck(/* args */);
+  void set_f(std::deque<std::string> ff) {
+    f = ff;
+  }
+  void set_s(std::deque<std::pair<std::string, std::string>> ss) {
+    s = ss;
+  }
+  auto get_f() {
+    return f;
+  }
+  auto get_s() {
+    return s;
+  }
+  ~bck();
+};
 
 class WG
 {
@@ -55,6 +76,7 @@ public:
   bool first_check();
   bool second_check();
   void cycle_check();
-  std::vector<std::deque<std::string>> deduce(std::string s);
+  bck deduce(std::string s);
+  void print_sytax_tree(std::deque<std::string> q);
   ~WG();
 };

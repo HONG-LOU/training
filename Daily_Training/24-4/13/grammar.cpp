@@ -315,10 +315,26 @@ void WG::print_grammar() {
   std::cout << "\n}\n\n";
 }
 
-std::vector<std::deque<std::string>> WG::deduce(std::string s) {
+bck::bck(/* args */)
+{
+}
+
+bck::~bck()
+{
+}
+
+
+
+bck WG::deduce(std::string s) {
+
+  int cou = 0;
+
+  bck nbck;
+  std::deque<std::pair<std::string, std::string>> tr;
   std::map<std::string, bool> ys;
   std::map<std::string, bool> isvised;
   std::vector<std::deque<std::string>> fres;
+  std::vector<std::deque<std::pair<std::string, std::string>>> sres;
   std::map<char, std::vector<std::string>> mp;
   std::deque<std::string> ans;
   for (auto c : this->getG()) {
@@ -330,7 +346,9 @@ std::vector<std::deque<std::string>> WG::deduce(std::string s) {
   ans.push_back(this->get_start());
 
   std::function<void(std::string)> dfs = [&] (std::string cnt) {
-    // std::cout << cnt << " ";
+    // if (cou++ > 10) {
+    //   return;
+    // }
     if (cnt.length() > s.length()) {
       return;
     }
@@ -347,7 +365,7 @@ std::vector<std::deque<std::string>> WG::deduce(std::string s) {
       }
       if (!ys[res]) {
         fres.push_back(ans);
-        // std::cout << res << "\n";
+        sres.push_back(tr);
         ys[res] = true;
       }
       return;
@@ -363,6 +381,9 @@ std::vector<std::deque<std::string>> WG::deduce(std::string s) {
         }
         // std::cout << nc << "(" << nc.length() << ")" << ' ';
         for (auto p : mp[cnt[i]]) {
+          std::string pp = "";
+          pp += p;
+          tr.push_back({sc, pp});
           nc += p;
           for (int j = i + 1; j < cnt.length(); j++) {
             nc += cnt[j];
@@ -376,6 +397,7 @@ std::vector<std::deque<std::string>> WG::deduce(std::string s) {
           }
 
           ans.pop_back();
+          tr.pop_back();
           nc = "";
           for (int j = 0; j < i; j++) {
             nc += cnt[j];
@@ -386,7 +408,21 @@ std::vector<std::deque<std::string>> WG::deduce(std::string s) {
     }
   };
   dfs(this->get_start());
-  return fres;
+  if (fres.empty()) {
+    bck fb;
+    return fb;
+  }
+  nbck.set_f(fres[0]);
+  nbck.set_s(sres[0]);
+  return nbck;
+}
+
+void WG::print_sytax_tree(std::deque<std::string> q) {
+  int mx = 0;
+  for (auto c : q) {
+    mx = std::max(mx, (int) c.length());
+  }
+
 }
 
 /*
