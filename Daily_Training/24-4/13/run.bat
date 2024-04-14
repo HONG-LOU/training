@@ -1,0 +1,1 @@
+g++ main.cpp grammar.cpp -o main.exe

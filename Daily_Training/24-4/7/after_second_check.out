@@ -1,10 +1,8 @@
-E::=E S+F T 
-S::=i 
-T::=T*i i 
-Z::=E+T 
+A::=e 
+B::=Af 
+Z::=Be 
 
-E::=E S+F T 
-S::=i 
-T::=T*i i 
-Z::=E+T 
+A::=e 
+B::=Af 
+Z::=Be 
 

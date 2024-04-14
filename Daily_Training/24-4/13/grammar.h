@@ -28,19 +28,30 @@ class WG
 {
 private:
   std::vector<grammar> G;
+  std::string start;
   std::vector<std::string> terminal;
   std::vector<std::string> non_terminal;
 public:
   WG();
   void add_grammar(grammar g);
+  std::vector<grammar> getG() {
+    return this->G;
+  }
+  void set_start(std::string s) {
+    this->start = s;
+  }
+  std::string get_start() {
+    return this->start;
+  }
   void print_grammar();
-  void set_terminal(std::vector<std::string> t) {
-    this->terminal = t;
-  }
-  void set_non_terminal(std::vector<std::string> n) {
-    this->non_terminal = n;
-  }
+  // void set_this(WG g) {
+  //   *this = g;
+  // }
   void cal_terminal();
   void cal_non_terminal();
+  bool is_terminal(std::string s);
+  bool is_non_terminal(std::string s);
+  bool first_check();
+  bool second_check();
   ~WG();
 };

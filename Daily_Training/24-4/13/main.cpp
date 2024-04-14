@@ -4,11 +4,23 @@
 **/
 #include <bits/stdc++.h>
 #include "show.h"
-#include "read.h"
+#include "readG.h"
 
 auto main () -> int {
 
-  read_G();
+  read r;
+
+  auto w = r.read_grammar();
+
+  w.print_grammar();
+
+  w.first_check();
+
+  w.print_grammar();
+
+  w.second_check();
+
+  w.print_grammar();
   
   return 0;
 }
