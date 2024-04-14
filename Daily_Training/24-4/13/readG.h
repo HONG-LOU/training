@@ -3,6 +3,8 @@
  *    created: 2024-04-13 19:18:18
 **/
 #include "grammar.h"
+#include "show.h"
+#include <bits/stdc++.h>
 class read
 {
 private:
@@ -10,13 +12,20 @@ private:
 public:
   read(/* args */);
   WG read_grammar() {
-    std::cout << "Please Input Grammar File Name : ";
+    shows("Please Input Grammar File Name.");
     std::string fs;
     std::cin >> fs;
+    std::cout << "\n";
 
     std::ifstream in;
+    
     in.open(fs);
 
+    if (!in) {
+      shows("No Such File In Directory.");
+      return WG();
+    }
+    
     std::string sentence_input;
 
     auto W = WG();
@@ -32,7 +41,26 @@ public:
       W.add_grammar(cnt);
     }
     in.close();
+
+    shows("Grammar File Read Completed.");
     return W;
+  }
+
+  std::string read_sentence() {
+    shows("Please Input Sentece File Name.");
+    std::ifstream ins;
+    std::string fs;
+    std::cin >> fs;
+    std::cout << "\n";
+    ins.open(fs);
+    if (!ins) {
+      shows("No Such File In Directory.");
+      return "";
+    }
+    std::string sentence;
+    ins >> sentence;
+    shows("Sentence File Read Completed.");
+    return sentence;
   }
   ~read();
 };

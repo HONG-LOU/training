@@ -10,7 +10,7 @@ void shows(std::string s) {
   for (int i = 0; i < len + 6; i++) {
     std::cout << "=";
   }
-  std::cout << "\n";
+  std::cout << "\n\n";
 }
 
 void showvs(std::vector<std::string> s) {
@@ -45,5 +45,5 @@ void showvs(std::vector<std::string> s) {
   for (int i = 0; i < ml + 7; i++) {
     std::cout << "=";
   }
-  std::cout << "\n";
+  std::cout << "\n\n";
 }

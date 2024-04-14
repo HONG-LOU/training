@@ -1,0 +1,8 @@
+Z::=E+T
+F::=F|FP|P
+G::=G|GG|F
+Q::=E|E+F|T|S
+E::=E|S+F|T
+P::=G
+T::=T*i|i
+S::=i

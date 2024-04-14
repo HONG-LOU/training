@@ -34,6 +34,7 @@ private:
 public:
   WG();
   void add_grammar(grammar g);
+  void split_grammar();
   std::vector<grammar> getG() {
     return this->G;
   }
@@ -53,5 +54,7 @@ public:
   bool is_non_terminal(std::string s);
   bool first_check();
   bool second_check();
+  void cycle_check();
+  std::vector<std::deque<std::string>> deduce(std::string s);
   ~WG();
 };

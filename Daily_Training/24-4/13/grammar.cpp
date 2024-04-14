@@ -3,6 +3,7 @@
  *    created: 2024-04-13 19:23:30
 **/
 #include "grammar.h"
+#include "show.h"
 
 grammar::grammar() {
 
@@ -66,6 +67,25 @@ void WG::add_grammar(grammar g) {
   G.push_back(g);
 }
 
+void WG::split_grammar() {
+  WG ng;
+  ng.set_start(this->get_start());
+
+  for (auto c : this->getG()) {
+    std::string cnt = c.get_l();
+    cnt += "::=";
+    for (auto cc : c.get_r()) {
+      std::string ncnt = cnt + cc;
+      ng.add_grammar(ncnt);
+    }
+  }
+
+  ng.cal_non_terminal();
+  ng.cal_terminal();
+  shows("Grammar Splited.");
+  *this = ng;
+}
+
 void WG::cal_non_terminal() {
   std::set<std::string> n;
   n.clear();
@@ -82,6 +102,8 @@ void WG::cal_non_terminal() {
     }
   }
   this->non_terminal = std::vector<std::string>(n.begin(), n.end());
+
+  shows("Non-terminators Finded.");
 }
 
 void WG::cal_terminal() {
@@ -99,6 +121,7 @@ void WG::cal_terminal() {
     }
   }
   this->terminal = std::vector<std::string>(t.begin(), t.end());
+  shows("Terminators Finded.");
 }
 
 bool WG::is_terminal(std::string s) {
@@ -120,6 +143,8 @@ bool WG::is_non_terminal(std::string s) {
 }
 
 bool WG::first_check() {
+  shows("Type I Discrimination.");
+  auto G = this->getG();
   int sz = G.size();
   std::map<std::string, bool> dervied;
   std::vector<std::string> checked_N;
@@ -162,6 +187,11 @@ bool WG::first_check() {
     }
   }
 
+  auto fc = ng.getG();
+  std::sort(fc.begin(), fc.end());
+
+  ng.G = fc;
+
   ng.cal_non_terminal();
   ng.cal_terminal();
 
@@ -171,120 +201,396 @@ bool WG::first_check() {
 
 // 判别条件2
 bool WG::second_check() {
-  int sz = (int) G.size();
-  std::map<grammar, bool> is_next; // 用来判断这句语法是否已经推导过
-  is_next.clear();
+  shows("Type II Discrimination.");
+  auto G = this->getG();
+  int sz = G.size();
 
-  std::vector<grammar> value; // 存储可以推导到的语法
+  std::queue<grammar> vis;
 
-  std::map<std::string, bool> is_derived; // 判断当前符号是否可以推导到
+  std::map<std::string, bool> checked;
 
-  std::queue<std::string> sderive; // 队列存储当前推导的符号
+  std::vector<grammar> f;
 
-  // 遍历所有语法找到右部只包含终结符的语法
+  std::map<std::string, bool> is_ok;
+
+  for (auto c : terminal) {
+    is_ok[c] = true;
+  }
+
   for (auto c : G) {
-    for (auto sc : c.get_r()) {
-      bool is_all_teiminal = true;
-      for (auto ch : sc) {
+    auto r = c.get_r()[0];
+    bool ok = true;
+    for (auto ch : r) {
+      std::string cch = "";
+      cch += ch;
+      if (!is_ok[cch]) {
+        ok = false;
+        break;
+      }
+    }
+    if (ok) {
+      is_ok[c.get_l()] = true;
+      checked[c.get_l() + c.get_r()[0]] = true;
+      vis.push(c);
+      f.push_back(c);
+    }
+  }
+
+  while (!vis.empty()) {
+    auto q = vis.front();
+    vis.pop();
+    for (auto c : G) {
+      if (checked[c.get_l() + c.get_r()[0]]) {
+        continue;
+      }
+      bool is_all_ok = true;
+      for (auto ch : c.get_r()[0]) {
         std::string cch = "";
         cch += ch;
-        if (is_non_terminal(cch)) {
-          is_all_teiminal = false;
+        if (!is_ok[cch]) {
+          // std::cout << "!ok == > " << c.get_l() << ' ' << c.get_r()[0] << ' ' << ch << "\n\n";
+          is_all_ok = false;
           break;
         }
       }
-      if (is_all_teiminal) {
-        for (auto sc : c.get_r()) {
-          for (auto ch : sc) {
-            std::string cch = "";
-            cch += ch;
-            sderive.push(cch);
-            is_derived[cch] = true;
-          }
-        }
+      if (is_all_ok) {
+        is_ok[c.get_l()] = true;
+        checked[c.get_l() + c.get_r()[0]] = true;
+        vis.push(c);
+        f.push_back(c);
       }
     }
-  }
-
-  // 符合条件一直推导
-  while (!sderive.empty()) {
-    auto cnt_derived = sderive.front();
-    sderive.pop();
-    
-    for (auto c : getG()) {
-      if (is_next[c]) {
-        continue;
-      }
-      
-      for (auto sc : c.get_r()) {
-        bool is_all_derived = true;
-        for (auto ch : sc) {
-          std::string cch = "";
-          cch += ch;
-          if (!is_derived[cch] && !is_terminal(cch)) {
-            is_all_derived = false;
-          }
-        }
-        if (is_all_derived) {
-          sderive.push(c.get_l());
-          is_derived[c.get_l()] = true;
-          value.push_back(c);
-          is_next[c] = true;
-        }
-      }
-    }
-  }
-
-  std::vector<grammar> nG;
-  nG.clear();
-
-  std::sort(value.begin(), value.end());
-
-  std::map<grammar, bool> is_maped;
-
-  // 将判别条件2处理后的语法存入after_second_check.out
-  // 并将语法结构数组更新
-  for (auto c : value) {
-    if (is_maped[c]) {
-      continue;
-    }
-    is_maped[c] = true;
-    nG.push_back(c);
   }
 
   WG ng;
   ng.set_start(get_start());
-  for (auto c : nG) {
+
+  for (auto c : f) {
     ng.add_grammar(c);
   }
+
+  auto fc = ng.getG();
+  std::sort(fc.begin(), fc.end());
+
+  ng.G = fc;
 
   ng.cal_non_terminal();
   ng.cal_terminal();
 
   *this = ng;
-  return (int) getG().size() == sz;
+  return sz == (int) this->getG().size();
 };
 
+void WG::cycle_check() {
+  bool fcheck = false, scheck = false;
+  do {
+    fcheck = first_check();
+    print_grammar();
+    scheck = second_check();
+    print_grammar();
+  } while (!fcheck && !scheck);
+}
+
 void WG::print_grammar() {
+  std::cout << "Grammar([" << this->get_start() << "]) : {\n";
   for (auto c : this->G) {
-    std::cout << c.get_l();
-    std::cout << "=>";
+    std::cout << "  " << c.get_l();
+    std::cout << " ==> ";
     for (auto cc : c.get_r()) {
       std::cout << '[' << cc << ']' << ' ';
     }
     std::cout << "\n";
   }
-  this->cal_terminal();
-  this->cal_non_terminal();
-  std::cout << "Grammar Starts : " << this->start << "\n";
-  std::cout << "Terminal : ";
+  // this->cal_terminal();
+  // this->cal_non_terminal();
+  std::cout << "  Terminal : ";
   for (auto c : this->terminal) {
     std::cout << c << ' ';
   }
   std::cout << "\n";
-  std::cout << "Non-Terminal : ";
+  std::cout << "  Non-Terminal : ";
   for (auto c : this->non_terminal) {
     std::cout << c << ' ';
   }
-  std::cout << "\n";
+  std::cout << "\n}\n\n";
 }
+
+std::vector<std::deque<std::string>> WG::deduce(std::string s) {
+  std::map<std::string, bool> ys;
+  std::map<std::string, bool> isvised;
+  std::vector<std::deque<std::string>> fres;
+  std::map<char, std::vector<std::string>> mp;
+  std::deque<std::string> ans;
+  for (auto c : this->getG()) {
+    for (auto cc : c.get_r()) {
+      mp[c.get_l()[0]].push_back(cc);
+    }
+  }
+
+  ans.push_back(this->get_start());
+
+  std::function<void(std::string)> dfs = [&] (std::string cnt) {
+    // std::cout << cnt << " ";
+    if (cnt.length() > s.length()) {
+      return;
+    }
+    if (cnt == s) {
+      std::string res = "";
+      for (auto st : ans) {
+        res += st;
+        if (st != ans.back()) {
+          res += "==>";
+        }
+        else {
+          res += "\n";
+        }
+      }
+      if (!ys[res]) {
+        fres.push_back(ans);
+        // std::cout << res << "\n";
+        ys[res] = true;
+      }
+      return;
+    }
+    for (int i = 0; i < cnt.length(); i++) {
+      std::string sc = "";
+      sc += cnt[i];
+      if (is_non_terminal(sc)) {
+        std::string nc;
+        nc.clear();
+        for (int j = 0; j < i; j++) {
+          nc += cnt[j];
+        }
+        // std::cout << nc << "(" << nc.length() << ")" << ' ';
+        for (auto p : mp[cnt[i]]) {
+          nc += p;
+          for (int j = i + 1; j < cnt.length(); j++) {
+            nc += cnt[j];
+          }
+          // std::cout << "[" << nc << "]" << "\n";
+          ans.push_back(nc);
+          if (!isvised[nc]) {
+            isvised[nc] = true;
+            dfs(nc);
+            isvised[nc] = false;
+          }
+
+          ans.pop_back();
+          nc = "";
+          for (int j = 0; j < i; j++) {
+            nc += cnt[j];
+          }
+        }
+        
+      }
+    }
+  };
+  dfs(this->get_start());
+  return fres;
+}
+
+/*
+cnt is E
+cnt is T
+cnt is F
+cnt is i
+cnt is i(E)
+cnt is i(T)
+cnt is i(F)
+cnt is i(i)
+cnt is i(i)(E))
+cnt is i(F)T*F)
+cnt is i(T)E+T)
+cnt is FT*F
+cnt is iT*F
+cnt is iF*F
+cnt is ii*F
+cnt is ii*i
+cnt is ii*i(E)
+cnt is ii*F(E)*F
+cnt is iF*i
+cnt is ii*i
+cnt is ii*i(E)*i
+cnt is iF*i(E)
+cnt is iF*FT*F*F
+cnt is iT*i
+cnt is iF*i
+cnt is iF*iT*F*i
+cnt is iT*i(E)
+cnt is iT*F(E)T*F
+cnt is FF*F
+cnt is iF*F
+cnt is iF*F(E)F*F
+cnt is Fi*F
+cnt is ii*F
+cnt is ii*F(E)i*F
+cnt is Fi*i
+cnt is ii*i
+cnt is ii*i(E)i*i
+cnt is Fi*i(E)
+cnt is Fi*F(E)*F
+cnt is FF*i
+cnt is iF*i
+cnt is iF*i(E)F*i
+cnt is Fi*i
+cnt is Fi*i(E)*i
+cnt is FF*i(E)
+cnt is FF*FT*F*F
+cnt is FT*i
+cnt is iT*i
+cnt is iT*i(E)T*i
+cnt is FF*i
+cnt is FF*iT*F*i
+cnt is FT*i(E)
+cnt is TE+T
+cnt is FE+T
+cnt is iE+T
+cnt is iT+T
+cnt is iF+T
+cnt is ii+T
+cnt is ii+F
+cnt is ii+i
+cnt is ii+i(E)
+cnt is ii+FT*F
+cnt is ii+T(E)+T
+cnt is iF+F
+cnt is ii+F
+cnt is ii+F(E)+F
+cnt is iF+i
+cnt is ii+i
+cnt is ii+i(E)+i
+cnt is iF+i(E)
+cnt is iF+FT*F
+cnt is iF+TT*F+T
+cnt is iT+F
+cnt is iF+F
+cnt is iF+FT*F+F
+cnt is iT+i
+cnt is iF+i
+cnt is iF+iT*F+i
+cnt is iT+i(E)
+cnt is iT+FT*F
+cnt is iT+TE+T+T
+cnt is iE+F
+cnt is iT+F
+cnt is iT+FE+T+F
+cnt is iE+i
+cnt is iT+i
+cnt is iT+iE+T+i
+cnt is iE+i(E)
+cnt is iE+FT*F
+cnt is iE+T(E)E+T
+cnt is FT+T
+cnt is iT+T
+cnt is iT+T(E)T+T
+cnt is FF+T
+cnt is iF+T
+cnt is iF+T(E)F+T
+cnt is Fi+T
+cnt is ii+T
+cnt is ii+T(E)i+T
+cnt is Fi+F
+cnt is ii+F
+cnt is ii+F(E)i+F
+cnt is Fi+i
+cnt is ii+i
+cnt is ii+i(E)i+i
+cnt is Fi+i(E)
+cnt is Fi+FT*F
+cnt is Fi+T(E)+T
+cnt is FF+F
+cnt is iF+F
+cnt is iF+F(E)F+F
+cnt is Fi+F
+cnt is Fi+F(E)+F
+cnt is FF+i
+cnt is iF+i
+cnt is iF+i(E)F+i
+cnt is Fi+i
+cnt is Fi+i(E)+i
+cnt is FF+i(E)
+cnt is FF+FT*F
+cnt is FF+TT*F+T
+cnt is FT+F
+cnt is iT+F
+cnt is iT+F(E)T+F
+cnt is FF+F
+cnt is FF+FT*F+F
+cnt is FT+i
+cnt is iT+i
+cnt is iT+i(E)T+i
+cnt is FF+i
+cnt is FF+iT*F+i
+cnt is FT+i(E)
+cnt is FT+FT*F
+cnt is FT+TE+T+T
+cnt is FE+F
+cnt is iE+F
+cnt is iE+F(E)E+F
+cnt is FT+F
+cnt is FT+FE+T+F
+cnt is FE+i
+cnt is iE+i
+cnt is iE+i(E)E+i
+cnt is FT+i
+cnt is FT+iE+T+i
+cnt is FE+i(E)
+cnt is FE+FT*F
+cnt is FE+TT*FE+T
+cnt is TT+T
+cnt is FT+T
+cnt is FT+TT*FT+T
+cnt is TF+T
+cnt is FF+T
+cnt is FF+TT*FF+T
+cnt is Ti+T
+cnt is Fi+T
+cnt is Fi+TT*Fi+T
+cnt is Ti+F
+cnt is Fi+F
+cnt is Fi+FT*Fi+F
+cnt is Ti+i
+cnt is Fi+i
+cnt is Fi+iT*Fi+i
+cnt is Ti+i(E)
+cnt is Ti+FT*F
+cnt is Ti+T(E)+T
+cnt is TF+F
+cnt is FF+F
+cnt is FF+FT*FF+F
+cnt is Ti+F
+cnt is Ti+F(E)+F
+cnt is TF+i
+cnt is FF+i
+cnt is FF+iT*FF+i
+cnt is Ti+i
+cnt is Ti+i(E)+i
+cnt is TF+i(E)
+cnt is TF+FT*F
+cnt is TF+TT*F+T
+cnt is TT+F
+cnt is FT+F
+cnt is FT+FT*FT+F
+cnt is TF+F
+cnt is TF+FT*F+F
+cnt is TT+i
+cnt is FT+i
+cnt is FT+iT*FT+i
+cnt is TF+i
+cnt is TF+iT*F+i
+cnt is TT+i(E)
+cnt is TT+FT*F
+cnt is TT+TE+T+T
+cnt is TE+F
+cnt is FE+F
+cnt is FE+FT*FE+F
+cnt is TT+F
+cnt is TT+FE+T+F
+cnt is TE+i
+cnt is FE+i
+cnt is FE+iT*FE+i
+cnt is TT+i
+cnt is TT+iE+T+i
+cnt is TE+i(E)
+cnt is TE+FT*F
+*/
