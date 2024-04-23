@@ -5,20 +5,17 @@
 #include "grammar.h"
 #include "show.h"
 #include <bits/stdc++.h>
-class read
-{
+class read {
 private:
-  /* data */
+  
 public:
-  read(/* args */);
+  read();
   WG read_grammar() {
     shows("Please Input Grammar File Name.");
     std::string fs;
     std::cin >> fs;
     std::cout << "\n";
-
     std::ifstream in;
-    
     in.open(fs);
 
     if (!in) {
@@ -27,11 +24,9 @@ public:
     }
     
     std::string sentence_input;
-
     auto W = WG();
 
     bool startok = true;
-
     while (in >> sentence_input) {
       auto cnt = grammar(sentence_input);
       if (startok) {
@@ -41,7 +36,6 @@ public:
       W.add_grammar(cnt);
     }
     in.close();
-
     shows("Grammar File Read Completed.");
     return W;
   }

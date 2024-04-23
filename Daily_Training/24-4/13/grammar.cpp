@@ -150,7 +150,6 @@ bool WG::first_check() {
   std::vector<std::string> checked_N;
 
   dervied.clear();
-
   dervied[get_start()] = true;
 
   std::queue<std::string> derive;
@@ -179,8 +178,6 @@ bool WG::first_check() {
   WG ng;
   ng.set_start(get_start());
 
-  // std::vector<grammar> nG;
-
   for (auto c : G) {
     if (dervied[c.get_l()]) {
       ng.add_grammar(c);
@@ -189,12 +186,9 @@ bool WG::first_check() {
 
   auto fc = ng.getG();
   std::sort(fc.begin(), fc.end());
-
   ng.G = fc;
-
   ng.cal_non_terminal();
   ng.cal_terminal();
-
   *this = ng;
   return (int) getG().size() == sz;
 }
@@ -204,15 +198,10 @@ bool WG::second_check() {
   shows("Type II Discrimination.");
   auto G = this->getG();
   int sz = G.size();
-
   std::queue<grammar> vis;
-
   std::map<std::string, bool> checked;
-
   std::vector<grammar> f;
-
   std::map<std::string, bool> is_ok;
-
   for (auto c : terminal) {
     is_ok[c] = true;
   }
@@ -248,7 +237,6 @@ bool WG::second_check() {
         std::string cch = "";
         cch += ch;
         if (!is_ok[cch]) {
-          // std::cout << "!ok == > " << c.get_l() << ' ' << c.get_r()[0] << ' ' << ch << "\n\n";
           is_all_ok = false;
           break;
         }
@@ -264,31 +252,34 @@ bool WG::second_check() {
 
   WG ng;
   ng.set_start(get_start());
-
   for (auto c : f) {
     ng.add_grammar(c);
   }
-
   auto fc = ng.getG();
   std::sort(fc.begin(), fc.end());
-
   ng.G = fc;
-
   ng.cal_non_terminal();
   ng.cal_terminal();
-
   *this = ng;
   return sz == (int) this->getG().size();
 };
 
 void WG::cycle_check() {
   bool fcheck = false, scheck = false;
+  if (this->terminal.empty()) {
+    cal_terminal();
+  }
+  if (this->non_terminal.empty()) {
+    cal_non_terminal();
+  }
   do {
     fcheck = first_check();
     print_grammar();
     scheck = second_check();
     print_grammar();
   } while (!fcheck && !scheck);
+
+  shows("Grammar Compace Finished.");
 }
 
 void WG::print_grammar() {
@@ -301,8 +292,6 @@ void WG::print_grammar() {
     }
     std::cout << "\n";
   }
-  // this->cal_terminal();
-  // this->cal_non_terminal();
   std::cout << "  Terminal : ";
   for (auto c : this->terminal) {
     std::cout << c << ' ';
@@ -326,9 +315,7 @@ bck::~bck()
 
 
 bck WG::deduce(std::string s) {
-
   int cou = 0;
-
   bck nbck;
   std::deque<std::pair<std::string, std::string>> tr;
   std::map<std::string, bool> ys;
@@ -342,13 +329,8 @@ bck WG::deduce(std::string s) {
       mp[c.get_l()[0]].push_back(cc);
     }
   }
-
   ans.push_back(this->get_start());
-
   std::function<void(std::string)> dfs = [&] (std::string cnt) {
-    // if (cou++ > 10) {
-    //   return;
-    // }
     if (cnt.length() > s.length()) {
       return;
     }
@@ -363,6 +345,7 @@ bck WG::deduce(std::string s) {
           res += "\n";
         }
       }
+      // std::cout << res << "\n";
       if (!ys[res]) {
         fres.push_back(ans);
         sres.push_back(tr);
@@ -379,7 +362,6 @@ bck WG::deduce(std::string s) {
         for (int j = 0; j < i; j++) {
           nc += cnt[j];
         }
-        // std::cout << nc << "(" << nc.length() << ")" << ' ';
         for (auto p : mp[cnt[i]]) {
           std::string pp = "";
           pp += p;
@@ -388,14 +370,12 @@ bck WG::deduce(std::string s) {
           for (int j = i + 1; j < cnt.length(); j++) {
             nc += cnt[j];
           }
-          // std::cout << "[" << nc << "]" << "\n";
           ans.push_back(nc);
           if (!isvised[nc]) {
             isvised[nc] = true;
             dfs(nc);
             isvised[nc] = false;
           }
-
           ans.pop_back();
           tr.pop_back();
           nc = "";
@@ -403,7 +383,6 @@ bck WG::deduce(std::string s) {
             nc += cnt[j];
           }
         }
-        
       }
     }
   };

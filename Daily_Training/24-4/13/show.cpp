@@ -15,7 +15,6 @@ void shows(std::string s) {
 
 void showvs(std::vector<std::string> s) {
   int sz = (int) s.size();
-
   int ml = 0;
   for (int i = 0; i < sz; i++) {
     ml = std::max(ml, (int) s[i].length());

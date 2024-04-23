@@ -1,7 +1,6 @@
 #include <bits/stdc++.h>
 
-class grammar
-{
+class grammar {
 private:
   std::string l;
   std::vector<std::string> r;
@@ -23,8 +22,7 @@ public:
   ~grammar();
 };
 
-class bck
-{
+class bck {
 private:
   std::deque<std::string> f;
   std::deque<std::pair<std::string, std::string>> s;
@@ -45,8 +43,7 @@ public:
   ~bck();
 };
 
-class WG
-{
+class WG {
 private:
   std::vector<grammar> G;
   std::string start;
@@ -66,9 +63,6 @@ public:
     return this->start;
   }
   void print_grammar();
-  // void set_this(WG g) {
-  //   *this = g;
-  // }
   void cal_terminal();
   void cal_non_terminal();
   bool is_terminal(std::string s);

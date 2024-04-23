@@ -69,7 +69,7 @@ auto main () -> int {
   while (true) {
     int c = choice();
     if (c == -1 || c == 0) {
-      shows("Input.");
+      shows("Error Input.");
       continue;
     }
     else if (c == 1) {
@@ -128,7 +128,9 @@ auto main () -> int {
         insert(root, tr);
         pre_s = "";
         preorder(root);
+        shows("prior order traversal as follow.");
         shows(pre_s);
+        shows("Synax Tree as follow.");
         printMTree("", root, false);
         std::cout << "\n";
       }
