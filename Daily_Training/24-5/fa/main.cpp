@@ -9,7 +9,7 @@
  * @author @HONG-LOU
  * @copyright It's Mine
  * @date 2024.5.12
- * 
+ * @link: github.com/HONG-LOU/training/tree/main/Daily_Training/24-5/fa
  */
 
 
@@ -63,10 +63,7 @@ void Draw_Datas(vector<int> xmax, vector<vector<string>> Str,vector<string> D,in
 }
 
 auto main () -> int {
-  // std::cin.tie(nullptr) -> std::ios::sync_with_stdio(false);
-
   std::ifstream in;
-  // in.open("gra.in");
 
   auto read = [&] () {
     shows("Please Input File Name");
@@ -124,7 +121,6 @@ auto main () -> int {
   
 
   auto print = [&] (std::vector<std::vector<std::array<char, 2>>> g) {
-    shows("FA AS FOLLOW");
     bool is_dfa = true;
     int n = (int) ct.size();
     std::cout << "N = (Q, E, M, S, F) = {\n";
@@ -203,13 +199,6 @@ auto main () -> int {
     
     std::cout << "};\n\n";
 
-    // if (is_dfa) {
-    //   shows("Is DFA");
-    // }
-    // else {
-    //   shows("Is NFA");
-    // }
-
     std::map<std::pair<std::string, char>, std::string> r;
 
     int ind = 0;
@@ -257,13 +246,11 @@ auto main () -> int {
     cnt.push(beg);
 
     while (!cnt.empty()) {
-      // p++;
       auto q = cnt.front();
       cnt.pop();
       if (q.empty()) {
         continue;
       }
-      // std::cout << q << ' ';
 
       std::vector<std::string> cnt_dfa_s;
 
@@ -278,14 +265,11 @@ auto main () -> int {
           cnt.push(ne);
           is_checked[ne] = true;
         }
-        // std::cout << ne << ' ';
         bce[{q, c}] = ne;
         cnt_dfa_s.push_back(ne);
       }
 
       dfa_s[q] = cnt_dfa_s;
-
-      // std::cout << "\n";
     }
 
     DFA dfa;
@@ -303,7 +287,6 @@ auto main () -> int {
       }
     }
     dfa.F.erase(unique(dfa.F.begin(), dfa.F.end()), dfa.F.end());
-    // for (auto )
     return dfa;
   };
 
@@ -329,15 +312,12 @@ auto main () -> int {
     std::vector<std::string> cnt;
 
     for (auto c : d.Q) {
-      // std::cout << c << ' ';
       cnt.clear();
       cnt.push_back(c);
       for (auto cc : d.E) {
         cnt.push_back(d.M[{c, cc}]);
-        // std::cout << d.M[{c, cc}] << ' ';
       }
       Str.push_back(cnt);
-      // std::cout << "\n";
     }
 
     std::vector<int> xmax((int) d.E.size() + 1, 1);
@@ -501,15 +481,12 @@ auto main () -> int {
     std::vector<std::string> cnt;
 
     for (auto c : nans) {
-      // std::cout << c << ' ';
       cnt.clear();
       cnt.push_back(c);
       for (auto cc : d.E) {
         cnt.push_back(d.M[{c, cc}]);
-        // std::cout << d.M[{c, cc}] << ' ';
       }
       Str.push_back(cnt);
-      // std::cout << "\n";
     }
 
     std::vector<int> xmax((int) d.E.size() + 1, 1);
@@ -528,8 +505,6 @@ auto main () -> int {
     for (auto c : d.E) {
       D.push_back(tos(c));
     }
-
-    // Draw_Datas(xmax, Str, D, columns, row);
 
     DFA mindfa;
     mindfa.E = d.E;
@@ -591,6 +566,12 @@ auto main () -> int {
       gg = getG();
       gg['Z'].push_back({'A', 'a'});
       re = print(gg);
+      if (re.is_dfa) {
+        shows("Is DFA");
+      }
+      else {
+        shows("Is NFA");
+      }
     }
     else if (ci == 3) {
       mbce = sol();
